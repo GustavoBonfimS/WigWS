@@ -3,10 +3,19 @@ package modelo;
 
 public class Usuario {
     
+    private int idusuario;
     private String login;
     private String senha;
     private String email;
     private String perfil;
+
+    public int getIdusuario() {
+        return idusuario;
+    }
+
+    public void setIdusuario(int idusuario) {
+        this.idusuario = idusuario;
+    }
 
     public String getLogin() {
         return login;

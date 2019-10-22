@@ -58,6 +58,29 @@ public class UsuarioDAO {
         return retorno;
     
     }
+    
+    public boolean onCliente (Usuario usuario) {
+        String sql = "INSERT INTO cliente (idusuario) VALUES (?)";
+        boolean retorno = false;
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+            pst.setInt(1, usuario.getIdusuario());
+            
+            if(pst.executeUpdate()>0)
+            {
+                retorno = true;
+            }
+                
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+            retorno = false;
+        }
+        
+        return retorno;
+    }
+    
     public boolean atualizar(Usuario usuario)
     {
         String sql = "UPDATE usuario set senha=?,perfil=?,email=? where username=?";
@@ -115,6 +138,7 @@ public class UsuarioDAO {
             while(res.next())
             {
                 Usuario item = new Usuario();
+                item.setIdusuario(res.getInt("idusuario"));
                 item.setLogin(res.getString("username"));
                 item.setSenha(res.getString("senha"));
                 item.setEmail(res.getString("email"));
@@ -149,6 +173,7 @@ public class UsuarioDAO {
             if(res.next())
             {
                 retorno = new Usuario();
+                retorno.setIdusuario(res.getInt("idusuario"));
                 retorno.setLogin(res.getString("username"));
                 retorno.setSenha(res.getString("senha"));
                 retorno.setPerfil(res.getString("perfil"));

@@ -108,6 +108,7 @@ public class ClienteDAO {
             while(res.next())
             {
                 Usuario item = new Usuario();
+                item.setIdusuario(res.getInt("idusuario"));
                 item.setLogin(res.getString("username"));
                 item.setSenha(res.getString("senha"));
                 item.setEmail(res.getString("email"));

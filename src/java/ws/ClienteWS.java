@@ -52,9 +52,17 @@ public class ClienteWS {
         Gson g = new Gson();
         Usuario u = g.fromJson(content, Usuario.class);
         
+        // ClienteDAO tem o metodo inserir especifico para o cliente
+        // UsuarioDAO tem o metodo de buscar para pegar o id
         ClienteDAO dao = new ClienteDAO();
+        UsuarioDAO udao = new UsuarioDAO();
         
-        return dao.inserir(u);
+        if (dao.inserir(u) == true) {
+            // busca id
+            Usuario usuario = udao.buscar(u);
+            // insert id na tabela cliente
+            return udao.onCliente(usuario);
+        } else return false;
     }
     
     @GET
