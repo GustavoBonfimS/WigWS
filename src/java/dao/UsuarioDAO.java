@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import modelo.Cliente;
 import modelo.Usuario;
 
 /**
@@ -59,12 +60,13 @@ public class UsuarioDAO {
     
     }
     
-    public boolean onCliente (Usuario usuario) {
-        String sql = "INSERT INTO cliente (idusuario) VALUES (?)";
+    public boolean onCliente (Cliente usuario) {
+        String sql = "INSERT INTO cliente (idusuario, CPF) VALUES (?,?)";
         boolean retorno = false;
         PreparedStatement pst = Conexao.getPreparedStatement(sql);
         try {
             pst.setInt(1, usuario.getIdusuario());
+            pst.setString(2, usuario.getCPF());
             
             if(pst.executeUpdate()>0)
             {
@@ -173,6 +175,41 @@ public class UsuarioDAO {
             if(res.next())
             {
                 retorno = new Usuario();
+                retorno.setIdusuario(res.getInt("idusuario"));
+                retorno.setLogin(res.getString("username"));
+                retorno.setSenha(res.getString("senha"));
+                retorno.setPerfil(res.getString("perfil"));
+                retorno.setEmail(res.getString("email"));
+                
+                
+            }
+               
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+            
+        }
+        
+        return retorno;
+    
+    
+    }
+    
+    public Cliente buscarCliente(Cliente usuario)
+    {
+        String sql = "SELECT * FROM usuario where username=?";
+        Cliente retorno = null;
+        
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+           
+            pst.setString(1, usuario.getLogin());
+            ResultSet res = pst.executeQuery();
+            
+            if(res.next())
+            {
+                retorno = new Cliente();
                 retorno.setIdusuario(res.getInt("idusuario"));
                 retorno.setLogin(res.getString("username"));
                 retorno.setSenha(res.getString("senha"));

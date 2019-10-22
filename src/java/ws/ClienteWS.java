@@ -20,6 +20,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import modelo.Avaliacao;
+import modelo.Cliente;
 import modelo.Usuario;
 
 /**
@@ -41,78 +42,80 @@ public class ClienteWS {
 
     /**
      * Retrieves representation of an instance of ws.ClienteWS
+     *
      * @param content
      * @return an instance of java.lang.String
      */
-
     @POST
     @Consumes({"application/json"})
     @Path("/Cadastrar")
     public boolean EfeturarCadastro(String content) {
         Gson g = new Gson();
-        Usuario u = g.fromJson(content, Usuario.class);
-        
+        Cliente u = g.fromJson(content, Cliente.class);
+
         // ClienteDAO tem o metodo inserir especifico para o cliente
         // UsuarioDAO tem o metodo de buscar para pegar o id
         ClienteDAO dao = new ClienteDAO();
         UsuarioDAO udao = new UsuarioDAO();
-        
+
         if (dao.inserir(u) == true) {
             // busca id
-            Usuario usuario = udao.buscar(u);
+            Cliente usuario = udao.buscarCliente(u);
+            usuario.setCPF(u.getCPF());
             // insert id na tabela cliente
             return udao.onCliente(usuario);
-        } else return false;
+        } else {
+            return false;
+        }
     }
-    
+
     @GET
     @Produces("application/json")
     @Path("/Listar")
     public String ListarCliente() {
-       List<Usuario> lista;
+        List<Cliente> lista;
         ClienteDAO dao = new ClienteDAO();
         lista = dao.listar();
+        
         Gson g = new Gson();
         return g.toJson(lista);
     }
-    
+
     @POST
     @Consumes({"application/json"})
     @Path("/Avaliacao/Inserir")
     public boolean FazerAvaliacao(String content) {
         Gson g = new Gson();
         Avaliacao a = g.fromJson(content, Avaliacao.class);
-        
+
         ClienteDAO dao = new ClienteDAO();
         return dao.fazerAvaliacao(a);
     }
-    
+
     /*
-    @DELETE
-    @Path("/Excluir/{login}")
-    public boolean Excluir (@PathParam("login") String login) {
-        Usuario u = new Usuario();
-        u.setLogin(login);
+     @DELETE
+     @Path("/Excluir/{login}")
+     public boolean Excluir (@PathParam("login") String login) {
+     Usuario u = new Usuario();
+     u.setLogin(login);
         
-        ClienteDAO dao = new ClienteDAO();
-        u = dao.buscar(u);
+     ClienteDAO dao = new ClienteDAO();
+     u = dao.buscar(u);
         
-        return dao.excluir(u);
-    }
-    */
-    
-    
+     return dao.excluir(u);
+     }
+     */
     @POST
     @Consumes({"application/json"})
     @Path("/Avaliacao/Responder")
     public boolean ResponderAvaliacao(String content) {
         Gson g = new Gson();
         Avaliacao a = g.fromJson(content, Avaliacao.class);
-        
+
         ClienteDAO dao = new ClienteDAO();
         return dao.ResponderAvaliacao(a);
     }
-    
+
     @GET
     @Produces("application/json")
     @Path("/Avaliacao/Listar")
@@ -120,14 +123,14 @@ public class ClienteWS {
         List<Avaliacao> lista;
         ClienteDAO dao = new ClienteDAO();
         lista = dao.listarAvaliacao();
-        
+
         Gson g = new Gson();
         return g.toJson(lista);
     }
 
-    
     /**
      * PUT method for updating or creating an instance of ClienteWS
+     *
      * @param content representation for the resource
      * @return an HTTP response with content of the updated or created resource.
      */

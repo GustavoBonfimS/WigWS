@@ -18,7 +18,7 @@ public class ClienteDAO {
         
     }
     
-    public boolean inserir(Usuario usuario)
+    public boolean inserir(Cliente usuario)
     {
         String sql = "INSERT INTO usuario(username,senha,perfil,email) VALUES(?,?,?,?)";
         Boolean retorno = false;
@@ -95,10 +95,12 @@ public class ClienteDAO {
     }
     */
     
-    public List<Usuario> listar()
+    public List<Cliente> listar()
     {
-        String sql = "SELECT * FROM usuario WHERE usuario.perfil = 'cliente'";
-        List<Usuario> retorno = new ArrayList<Usuario>();
+        String sql = "SELECT usuario.idusuario, usuario.username, usuario.senha,\n" +
+"usuario.email, usuario.perfil, cliente.CPF FROM usuario, cliente\n" +
+"where usuario.perfil = 'cliente' and usuario.idusuario = cliente.idusuario";
+        List<Cliente> retorno = new ArrayList<Cliente>();
         
         PreparedStatement pst = Conexao.getPreparedStatement(sql);
         try {
@@ -107,12 +109,13 @@ public class ClienteDAO {
             ResultSet res = pst.executeQuery();
             while(res.next())
             {
-                Usuario item = new Usuario();
+                Cliente item = new Cliente();
                 item.setIdusuario(res.getInt("idusuario"));
                 item.setLogin(res.getString("username"));
                 item.setSenha(res.getString("senha"));
                 item.setEmail(res.getString("email"));
                 item.setPerfil(res.getString("perfil"));
+                item.setCPF(res.getString("cpf"));
                 
                 retorno.add(item);
             }
