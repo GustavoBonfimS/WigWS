@@ -196,7 +196,7 @@ public class UsuarioDAO {
     
     }
     
-    public Cliente buscarCliente(Cliente usuario)
+    public Cliente buscarIdDoCliente(Cliente usuario) // mesma coisa só que com objeto cliente
     {
         String sql = "SELECT * FROM usuario where username=?";
         Cliente retorno = null;

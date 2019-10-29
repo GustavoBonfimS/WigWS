@@ -45,18 +45,15 @@ public class ClienteDAO {
     
     }
     
-    /*
-    public boolean atualizar(Usuario usuario)
+    public boolean atualizarCPF(Cliente usuario)
     {
-        String sql = "UPDATE usuario set senha=?,perfil=?,email=? where username=?";
+        String sql = "UPDATE cliente set CPF=? where idusuario=?";
         Boolean retorno = false;
         PreparedStatement pst = Conexao.getPreparedStatement(sql);
         try {
           
-            pst.setString(1, usuario.getSenha());
-            pst.setString(2, usuario.getPerfil());
-            pst.setString(3, usuario.getEmail());
-            pst.setString(4, usuario.getLogin());
+            pst.setString(1, usuario.getCPF());
+            pst.setInt(2, usuario.getIdusuario());
             if(pst.executeUpdate()>0)
             {
                 retorno = true;
@@ -69,7 +66,43 @@ public class ClienteDAO {
         return retorno;
     
     }
-    */
+    
+    public Cliente buscar(Cliente cliente)
+    {
+        String sql = "select usuario.idusuario, cliente.idcliente, usuario.username, usuario.senha, usuario.email, usuario.perfil,\n" +
+"cliente.CPF from usuario, cliente where usuario.username =? and usuario.idusuario = cliente.idusuario";
+        Cliente retorno = null;
+        
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+           
+            pst.setString(1, cliente.getLogin());
+            ResultSet res = pst.executeQuery();
+            
+            if(res.next())
+            {
+                retorno = new Cliente();
+                retorno.setIdusuario(res.getInt("idusuario"));
+                retorno.setIdcliente(res.getInt("idcliente"));
+                retorno.setLogin(res.getString("username"));
+                retorno.setSenha(res.getString("senha"));
+                retorno.setPerfil(res.getString("perfil"));
+                retorno.setEmail(res.getString("email"));
+                retorno.setCPF(res.getString("CPF"));
+                
+            }
+               
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
+            
+        }
+        
+        return retorno;
+    
+    
+    }
     
     /*
     // mudar login para username antes de aplicar
@@ -131,45 +164,7 @@ public class ClienteDAO {
     
     
     }
-    
-    /*
-    
-    // mudar login para usuario antes de aplicar
-    public Usuario buscar(Usuario usuario)
-    {
-        String sql = "SELECT * FROM usuario where login=?";
-        Usuario retorno = null;
-        
-        PreparedStatement pst = Conexao.getPreparedStatement(sql);
-        try {
-           
-            pst.setString(1, usuario.getLogin());
-            ResultSet res = pst.executeQuery();
-            
-            if(res.next())
-            {
-                retorno = new Usuario();
-                retorno.setLogin(res.getString("login"));
-                retorno.setSenha(res.getString("senha"));
-                retorno.setPerfil(res.getString("perfil"));
-                retorno.setEmail(res.getString("email"));
-                
-                
-            }
-               
-            
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
-            
-        }
-        
-        return retorno;
-    
-    
-    }
-    */
-    
+     
     public boolean fazerAvaliacao(Avaliacao avaliacao) {
         
         String sql = "INSERT INTO avaliacao(autor, conteudo, idcliente, idempresa) VALUES(?,?,?,?)";

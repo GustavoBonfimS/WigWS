@@ -134,7 +134,5 @@ public class WigWS {
         
         UsuarioDAO dao = new UsuarioDAO();
         return dao.atualizar(u);
-        
-
     }
 }

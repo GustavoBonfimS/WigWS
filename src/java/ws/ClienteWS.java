@@ -60,7 +60,7 @@ public class ClienteWS {
 
         if (dao.inserir(u) == true) {
             // busca id
-            Cliente usuario = udao.buscarCliente(u);
+            Cliente usuario = udao.buscarIdDoCliente(u);
             usuario.setCPF(u.getCPF());
             // insert id na tabela cliente
             return udao.onCliente(usuario);
@@ -126,6 +126,37 @@ public class ClienteWS {
 
         Gson g = new Gson();
         return g.toJson(lista);
+    }
+    
+    @PUT
+    @Consumes("application/json")
+    @Path("/Alterar")
+    public boolean Alterar(String content) {
+        Gson g = new Gson();
+        Cliente c = g.fromJson(content, Cliente.class);
+        
+        UsuarioDAO udao = new UsuarioDAO();
+        if (udao.atualizar(c) == true) {
+            // busca id usuario e altera cpf na tabela cliente
+            Cliente u = udao.buscarIdDoCliente(c);
+            ClienteDAO dao = new ClienteDAO();
+            return dao.atualizarCPF(u);
+            
+        } else return false;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/get/{login}")
+    public String getCliente(@PathParam("login") String login) {
+        Cliente c = new Cliente();
+        c.setLogin(login);
+        
+        ClienteDAO dao = new ClienteDAO();
+        c = dao.buscar(c);
+        
+        Gson g = new Gson();
+        return g.toJson(c);
     }
 
     /**
