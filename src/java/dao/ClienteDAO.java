@@ -91,8 +91,7 @@ public class ClienteDAO {
                 retorno.setCPF(res.getString("CPF"));
                 
             }
-               
-            
+              
             
         } catch (SQLException ex) {
             Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
