@@ -49,9 +49,9 @@ public class ClienteWS {
     @POST
     @Consumes({"application/json"})
     @Path("/Cadastrar")
-    public boolean EfeturarCadastro(String content) {
+    public boolean EfeturarCadastro(Cliente content) {
         Gson g = new Gson();
-        Cliente u = g.fromJson(content, Cliente.class);
+        Cliente u = new Cliente(); // = g.fromJson(content, Cliente.class);
 
         // ClienteDAO tem o metodo inserir especifico para o cliente
         // UsuarioDAO tem o metodo de buscar para pegar o id
@@ -84,12 +84,14 @@ public class ClienteWS {
     @POST
     @Consumes({"application/json"})
     @Path("/Avaliacao/Inserir")
-    public boolean FazerAvaliacao(String content) {
+    public String FazerAvaliacao(String content) {
         Gson g = new Gson();
         Avaliacao a = g.fromJson(content, Avaliacao.class);
 
         ClienteDAO dao = new ClienteDAO();
-        return dao.fazerAvaliacao(a);
+        
+        Avaliacao retorno = dao.fazerAvaliacao(a);
+        return g.toJson(a);
     }
 
     /*

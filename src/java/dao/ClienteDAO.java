@@ -164,10 +164,10 @@ public class ClienteDAO {
     
     }
      
-    public boolean fazerAvaliacao(Avaliacao avaliacao) {
+    public Avaliacao fazerAvaliacao(Avaliacao avaliacao) {
         
         String sql = "INSERT INTO avaliacao(autor, conteudo, idcliente, idempresa) VALUES(?,?,?,?)";
-        Boolean retorno = false;
+        Avaliacao retorno = null;
         PreparedStatement pst = Conexao.getPreparedStatement(sql);
         try {
             pst.setString(1, avaliacao.getAutor());
@@ -177,12 +177,12 @@ public class ClienteDAO {
             
             if(pst.executeUpdate()>0)
             {
-                retorno = true;
+                retorno = avaliacao;
             }
             
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
-            retorno = false;
+            retorno = null;
         }
         
         return retorno;
