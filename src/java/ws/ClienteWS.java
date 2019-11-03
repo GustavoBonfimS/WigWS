@@ -89,9 +89,11 @@ public class ClienteWS {
         Avaliacao a = g.fromJson(content, Avaliacao.class);
 
         ClienteDAO dao = new ClienteDAO();
-        
-        Avaliacao retorno = dao.fazerAvaliacao(a);
-        return g.toJson(a);
+        Avaliacao retorno = null;
+        if (dao.fazerAvaliacao(a) == true) {
+             retorno = dao.buscarIdAvaliacao(a);
+        }
+        return g.toJson(retorno);
     }
 
     /*

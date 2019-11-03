@@ -164,10 +164,10 @@ public class ClienteDAO {
     
     }
      
-    public Avaliacao fazerAvaliacao(Avaliacao avaliacao) {
+    public boolean fazerAvaliacao(Avaliacao avaliacao) {
         
         String sql = "INSERT INTO avaliacao(autor, conteudo, idcliente, idempresa) VALUES(?,?,?,?)";
-        Avaliacao retorno = null;
+        boolean retorno = false;
         PreparedStatement pst = Conexao.getPreparedStatement(sql);
         try {
             pst.setString(1, avaliacao.getAutor());
@@ -177,12 +177,12 @@ public class ClienteDAO {
             
             if(pst.executeUpdate()>0)
             {
-                retorno = avaliacao;
+                retorno = true;
             }
             
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
-            retorno = null;
+     
         }
         
         return retorno;
@@ -239,6 +239,37 @@ public class ClienteDAO {
             
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+            
+        }
+        
+        return retorno;
+    
+    
+    }
+    
+    public Avaliacao buscarIdAvaliacao(Avaliacao avaliacao)
+    {
+        String sql = "SELECT * FROM avaliacao where conteudo =?";
+        Avaliacao retorno = null;
+        
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+           
+            pst.setString(1, avaliacao.getConteudo());
+            ResultSet res = pst.executeQuery();
+            
+            if(res.next())
+            {
+                retorno = new Avaliacao();
+                retorno.setIdavaliacao(res.getInt("idavaliacao"));
+                retorno.setAutor(res.getString("autor"));
+                retorno.setIdcliente(res.getInt("idcliente"));
+                retorno.setIdempresa(res.getInt("idempresa"));
+            }
+              
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
             
         }
         
