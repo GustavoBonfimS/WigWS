@@ -49,23 +49,28 @@ public class ClienteWS {
     @POST
     @Consumes({"application/json"})
     @Path("/Cadastrar")
-    public boolean EfeturarCadastro(Cliente content) {
+    public Cliente EfeturarCadastro(Cliente u) {
         Gson g = new Gson();
-        Cliente u = new Cliente(); // = g.fromJson(content, Cliente.class);
+        // Cliente u = new Cliente(); // = g.fromJson(content, Cliente.class);
 
         // ClienteDAO tem o metodo inserir especifico para o cliente
         // UsuarioDAO tem o metodo de buscar para pegar o id
         ClienteDAO dao = new ClienteDAO();
-        UsuarioDAO udao = new UsuarioDAO();
+
 
         if (dao.inserir(u) == true) {
-            // busca id
-            Cliente usuario = udao.buscarIdDoCliente(u);
+            // busca id da tabela usuario
+            Cliente usuario = dao.buscar(u);
+            //seta o cpf
             usuario.setCPF(u.getCPF());
-            // insert id na tabela cliente
-            return udao.onCliente(usuario);
+            // insert id usuario na tabela cliente
+            dao.onCliente(usuario);
+            //busca id da tabela cliente 
+            usuario = dao.buscar(u);
+            return usuario;
+            
         } else {
-            return false;
+            return null;
         }
     }
 
@@ -139,11 +144,11 @@ public class ClienteWS {
         Gson g = new Gson();
         Cliente c = g.fromJson(content, Cliente.class);
         
+        ClienteDAO dao = new ClienteDAO();
         UsuarioDAO udao = new UsuarioDAO();
         if (udao.atualizar(c) == true) {
             // busca id usuario e altera cpf na tabela cliente
-            Cliente u = udao.buscarIdDoCliente(c);
-            ClienteDAO dao = new ClienteDAO();
+            Cliente u = dao.buscar(c);
             return dao.atualizarCPF(u);
             
         } else return false;
