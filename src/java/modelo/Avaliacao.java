@@ -5,6 +5,9 @@
  */
 package modelo;
 
+import java.sql.Date;
+import java.sql.Time;
+
 /**
  *
  * @author Gustavo
@@ -13,6 +16,8 @@ public class Avaliacao {
     private int idavaliacao;
     private String autor;
     private String conteudo;
+    private Date data;
+    private Time hora;
     private int idcliente;
     private int idempresa;
 
@@ -55,4 +60,22 @@ public class Avaliacao {
     public void setConteudo(String conteudo) {
         this.conteudo = conteudo;
     }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
+    }
+
+    public Time getHora() {
+        return hora;
+    }
+
+    public void setHora(Time hora) {
+        this.hora = hora;
+    }
+    
+    
 }

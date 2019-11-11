@@ -80,9 +80,9 @@ public class WigWS {
         String retorno;
         
         if(usuario == null)
-            retorno = "Usuário não encontrado";
+            retorno = "false";
         else
-            retorno = "Usuario encontrado";
+            retorno = "true";
         
         // converter para json
         Gson g = new Gson();

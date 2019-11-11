@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -226,14 +228,17 @@ public class ClienteDAO {
      
     public boolean fazerAvaliacao(Avaliacao avaliacao) {
         
-        String sql = "INSERT INTO avaliacao(autor, conteudo, idcliente, idempresa) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO avaliacao(autor, conteudo, idcliente, idempresa, data, hora) VALUES(?,?,?,?,?,?)";
         boolean retorno = false;
+        DateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
         PreparedStatement pst = Conexao.getPreparedStatement(sql);
         try {
             pst.setString(1, avaliacao.getAutor());
             pst.setString(2, avaliacao.getConteudo());
             pst.setInt(3, avaliacao.getIdcliente());
             pst.setInt(4, avaliacao.getIdempresa());
+            pst.setDate(5, avaliacao.getData());
+            pst.setTime(6, avaliacao.getHora());
             
             if(pst.executeUpdate()>0)
             {
@@ -250,7 +255,7 @@ public class ClienteDAO {
     
     public boolean ResponderAvaliacao(Avaliacao avaliacao) {
         
-        String sql = "INSERT INTO resposta(autor, conteudo, idavaliacao, idempresa, idcliente) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO resposta(autor, conteudo, idavaliacao, idempresa, idcliente,data, hora) VALUES(?,?,?,?,?,?,?)";
         Boolean retorno = false;
         PreparedStatement pst = Conexao.getPreparedStatement(sql);
         try {
@@ -259,6 +264,8 @@ public class ClienteDAO {
             pst.setInt(3, avaliacao.getIdavaliacao());
             pst.setInt(4, avaliacao.getIdempresa());
             pst.setInt(5, avaliacao.getIdcliente());
+            pst.setDate(6, avaliacao.getData());
+            pst.setTime(7, avaliacao.getHora());
             
             if(pst.executeUpdate()>0)
             {
@@ -291,6 +298,8 @@ public class ClienteDAO {
                 item.setAutor(res.getString("autor"));
                 item.setIdcliente(res.getInt("idcliente"));
                 item.setIdempresa(res.getInt("idempresa"));
+                item.setData(res.getDate("data"));
+                item.setHora(res.getTime("hora"));
                 
                 retorno.add(item);
             }
@@ -325,6 +334,8 @@ public class ClienteDAO {
                 retorno.setAutor(res.getString("autor"));
                 retorno.setIdcliente(res.getInt("idcliente"));
                 retorno.setIdempresa(res.getInt("idempresa"));
+                retorno.setData(res.getDate("data"));
+                retorno.setHora(res.getTime("hora"));
             }
               
             

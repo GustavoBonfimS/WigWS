@@ -57,7 +57,6 @@ public class ClienteWS {
         // UsuarioDAO tem o metodo de buscar para pegar o id
         ClienteDAO dao = new ClienteDAO();
 
-
         if (dao.inserir(u) == true) {
             // busca id da tabela usuario
             Cliente usuario = dao.buscar(u);
@@ -68,7 +67,7 @@ public class ClienteWS {
             //busca id da tabela cliente 
             usuario = dao.buscar(u);
             return usuario;
-            
+
         } else {
             return null;
         }
@@ -81,7 +80,7 @@ public class ClienteWS {
         List<Cliente> lista;
         ClienteDAO dao = new ClienteDAO();
         lista = dao.listar();
-        
+
         Gson g = new Gson();
         return g.toJson(lista);
     }
@@ -96,24 +95,11 @@ public class ClienteWS {
         ClienteDAO dao = new ClienteDAO();
         Avaliacao retorno = null;
         if (dao.fazerAvaliacao(a) == true) {
-             retorno = dao.buscarIdAvaliacao(a);
+            retorno = dao.buscarIdAvaliacao(a);
         }
         return g.toJson(retorno);
     }
 
-    /*
-     @DELETE
-     @Path("/Excluir/{login}")
-     public boolean Excluir (@PathParam("login") String login) {
-     Usuario u = new Usuario();
-     u.setLogin(login);
-        
-     ClienteDAO dao = new ClienteDAO();
-     u = dao.buscar(u);
-        
-     return dao.excluir(u);
-     }
-     */
     @POST
     @Consumes({"application/json"})
     @Path("/Avaliacao/Responder")
@@ -136,34 +122,50 @@ public class ClienteWS {
         Gson g = new Gson();
         return g.toJson(lista);
     }
-    
+
+    @GET
+    @Produces("application/json")
+    @Path("/Avaliacao/get/{conteudo}")
+    public String getAvaliacao(@PathParam("conteudo") String content) {
+        Avaliacao a = new Avaliacao();
+        a.setConteudo("gostei muito do local, ótimas garotas");
+
+        ClienteDAO dao = new ClienteDAO();
+        a = dao.buscarIdAvaliacao(a);
+
+        Gson g = new Gson();
+        return g.toJson(a);
+    }
+
     @PUT
     @Consumes("application/json")
     @Path("/Alterar")
     public boolean Alterar(String content) {
         Gson g = new Gson();
         Cliente c = g.fromJson(content, Cliente.class);
-        
+
         ClienteDAO dao = new ClienteDAO();
         UsuarioDAO udao = new UsuarioDAO();
         if (udao.atualizar(c) == true) {
             // busca id usuario e altera cpf na tabela cliente
             Cliente u = dao.buscar(c);
             return dao.atualizarCPF(u);
-            
-        } else return false;
+
+        } else {
+            return false;
+        }
     }
-    
+
     @GET
     @Produces("application/json")
     @Path("/get/{login}")
     public String getCliente(@PathParam("login") String login) {
         Cliente c = new Cliente();
         c.setLogin(login);
-        
+
         ClienteDAO dao = new ClienteDAO();
         c = dao.buscar(c);
-        
+
         Gson g = new Gson();
         return g.toJson(c);
     }
