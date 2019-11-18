@@ -56,13 +56,13 @@ public class ClienteWS {
         // ClienteDAO tem o metodo inserir especifico para o cliente
         // UsuarioDAO tem o metodo de buscar para pegar o id
         ClienteDAO dao = new ClienteDAO();
-
+    
         if (dao.inserir(u) == true) {
             // busca id da tabela usuario
-            Cliente usuario = dao.buscar(u);
+            Cliente usuario = dao.buscarIdDoCliente(u);
             //seta o cpf
             usuario.setCPF(u.getCPF());
-            // insert id usuario na tabela cliente
+            // insert id usuario e cpf na tabela cliente
             dao.onCliente(usuario);
             //busca id da tabela cliente 
             usuario = dao.buscar(u);
@@ -169,6 +169,8 @@ public class ClienteWS {
         Gson g = new Gson();
         return g.toJson(c);
     }
+    
+    
 
     /**
      * PUT method for updating or creating an instance of ClienteWS

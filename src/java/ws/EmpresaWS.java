@@ -1,0 +1,104 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ws;
+
+import com.google.gson.Gson;
+import dao.EmpresaDAO;
+import dao.UsuarioDAO;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PUT;
+import modelo.Cliente;
+import modelo.Empresa;
+import modelo.Usuario;
+
+/**
+ * REST Web Service
+ *
+ * @author GustavoBonfimS
+ */
+@Path("empresa")
+public class EmpresaWS {
+
+    @Context
+    private UriInfo context;
+
+    /**
+     * Creates a new instance of EmpresaWS
+     */
+    public EmpresaWS() {
+    }
+
+    /**
+     * Retrieves representation of an instance of ws.EmpresaWS
+     *
+     * @return an instance of java.lang.String
+     */
+    @GET
+    @Produces("application/json")
+    public String getJson() {
+        //TODO return proper representation object
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * PUT method for updating or creating an instance of ClienteWS
+     *
+     * @param content representation for the resource
+     * @return an HTTP response with content of the updated or created resource.
+     */
+    @PUT
+    @Consumes("application/json")
+    public void putJson(String content) {
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/get/{CNPJ}")
+    public String getEmpresa(@PathParam("CNPJ") String CNPJ) {
+        Empresa e = new Empresa();
+        e.setCNPJ(CNPJ);
+
+        EmpresaDAO dao = new EmpresaDAO();
+        e = dao.buscar(e);
+
+        Gson g = new Gson();
+        return g.toJson(e);
+    }
+    
+    /*
+    @POST
+    @Consumes({"application/json"})
+    @Path("/Inserir")
+    public boolean Inserir(String content) {
+        Gson g = new Gson();
+        Empresa e = g.fromJson(content, Empresa.class);
+
+        EmpresaDAO dao = new EmpresaDAO();
+                
+        if (dao.inserir(e) == true) {
+            // busca id da tabela usuario
+            Empresa empresa = dao.buscar(e);
+            //seta o cnpj
+            empresa.setCNPJ(e.getCNPJ());
+            // insert id usuario na tabela cliente
+            dao.onCliente(usuario);
+            //busca id da tabela cliente 
+            usuario = dao.buscar(u);
+            return usuario;
+
+        } else {
+            return null;
+        }
+    }
+    */
+}
