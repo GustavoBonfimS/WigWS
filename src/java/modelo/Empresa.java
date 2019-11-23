@@ -5,6 +5,7 @@ package modelo;
  * @author gunai
  */
 public class Empresa extends Usuario {
+    
     private int idempresa;
     private String CNPJ;
     private String tipo;

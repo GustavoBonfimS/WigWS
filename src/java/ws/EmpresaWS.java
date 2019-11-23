@@ -6,8 +6,10 @@
 package ws;
 
 import com.google.gson.Gson;
+import dao.ClienteDAO;
 import dao.EmpresaDAO;
 import dao.UsuarioDAO;
+import java.util.List;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.PathParam;
@@ -60,6 +62,8 @@ public class EmpresaWS {
     @Consumes("application/json")
     public void putJson(String content) {
     }
+    
+    // -------------------------------------------------------------------------
 
     @GET
     @Produces("application/json")
@@ -74,12 +78,11 @@ public class EmpresaWS {
         Gson g = new Gson();
         return g.toJson(e);
     }
-    
-    /*
+   
     @POST
     @Consumes({"application/json"})
     @Path("/Inserir")
-    public boolean Inserir(String content) {
+    public Empresa Inserir(String content) {
         Gson g = new Gson();
         Empresa e = g.fromJson(content, Empresa.class);
 
@@ -87,18 +90,30 @@ public class EmpresaWS {
                 
         if (dao.inserir(e) == true) {
             // busca id da tabela usuario
-            Empresa empresa = dao.buscar(e);
+            Empresa empresa = dao.buscarIdDaEmpresa(e);
             //seta o cnpj
             empresa.setCNPJ(e.getCNPJ());
-            // insert id usuario na tabela cliente
-            dao.onCliente(usuario);
+            // insert id usuario e cnpj na tabela empresa
+            dao.onEmpresa(empresa);
             //busca id da tabela cliente 
-            usuario = dao.buscar(u);
-            return usuario;
+            empresa = dao.buscar(e);
+            return empresa;
 
         } else {
             return null;
         }
     }
-    */
+    
+    @GET
+    @Produces("application/json")
+    @Path("/Listar")
+    public String ListarEmpresa() {
+        List<Empresa> lista;
+        EmpresaDAO dao = new EmpresaDAO();
+        lista = dao.listar();
+
+        Gson g = new Gson();
+        return g.toJson(lista);
+    }
+    
 }

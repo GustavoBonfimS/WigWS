@@ -145,29 +145,6 @@ public class ClienteDAO {
 
     }
 
-    /*
-     // mudar login para username antes de aplicar
-     public boolean excluir(Usuario usuario)
-     {
-     String login = usuario.getLogin();
-        
-     String sql = "DELETE FROM usuario where login='"
-     + login + "'";
-     Boolean retorno = false;
-
-     try {
-     Statement st = (Statement)Conexao.getConexao().createStatement();
-     if(st.executeUpdate(sql) > 0)
-     retorno = true;
-     } catch (SQLException ex) {
-     Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
-     retorno = false;
-     }
-        
-     return retorno;
-    
-     }
-     */
     public List<Cliente> listar() {
         String sql = "select * from usuario, cliente where usuario.idusuario = cliente.idusuario and usuario.perfil = 'cliente'";
         List<Cliente> retorno = new ArrayList<Cliente>();
