@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -162,6 +163,37 @@ public class ClienteDAO {
                 item.setEmail(res.getString("email"));
                 item.setPerfil(res.getString("perfil"));
                 item.setCPF(res.getString("cpf"));
+
+                retorno.add(item);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return retorno;
+
+    }
+    
+    public List<Avaliacao> atualizarIndex(Date lastCheck, Date dataAtual) {
+        String sql = "select * from avaliacao where data between ? and ? ";
+        List<Avaliacao> retorno = new ArrayList<Avaliacao>();
+
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+            pst.setDate(1, lastCheck);
+            pst.setDate(2, dataAtual);
+            ResultSet res = pst.executeQuery();
+            while (res.next()) {
+                Avaliacao item = new Avaliacao();
+                item.setIdavaliacao(res.getInt("idavaliacao"));
+                item.setConteudo(res.getString("conteudo"));
+                item.setAutor(res.getString("autor"));
+                item.setIdcliente(res.getInt("idcliente"));
+                item.setIdempresa(res.getInt("idempresa"));
+                item.setData(res.getDate("data"));
+                item.setHora(res.getTime("hora"));
 
                 retorno.add(item);
             }

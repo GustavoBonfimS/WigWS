@@ -8,6 +8,7 @@ package ws;
 import com.google.gson.Gson;
 import dao.ClienteDAO;
 import dao.UsuarioDAO;
+import java.sql.Date;
 import java.util.List;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -168,6 +169,22 @@ public class ClienteWS {
 
         Gson g = new Gson();
         return g.toJson(c);
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/atualizarIndex/{lastCheck}")
+    public String atualizarIndex (@PathParam("lastCheck") Date lastCheck) {
+        Date horaAtual;
+        java.util.Date dataUtil = new java.util.Date();
+        horaAtual = new Date(dataUtil.getTime());
+        
+        ClienteDAO dao = new ClienteDAO();
+        List<Avaliacao> lista;
+        lista = dao.atualizarIndex(lastCheck, horaAtual);
+        
+        Gson g = new Gson();
+        return g.toJson(lista);
     }
     
     
