@@ -116,4 +116,16 @@ public class EmpresaWS {
         return g.toJson(lista);
     }
     
+    @GET
+    @Produces("application/json")
+    @Path("/pesquisa/{empresa}")
+    public String pesquisa (@PathParam("empresa") String empresa) {
+        List<Empresa> lista;
+        EmpresaDAO dao = new EmpresaDAO();
+        lista = dao.atualizarPesquisa(empresa);
+
+        Gson g = new Gson();
+        return g.toJson(lista);
+    }
+    
 }

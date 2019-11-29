@@ -157,4 +157,36 @@ public class EmpresaDAO {
         return retorno;
 
     }
+    
+    public List<Empresa> atualizarPesquisa(String pesquisa) {
+        String sql = "select * from usuario, empresa where usuario.username like'%" + pesquisa + "%' and usuario.idusuario = empresa.idusuario";
+        List<Empresa> retorno = new ArrayList<Empresa>();
+
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+            // pst.setString(1, pesquisa);
+            ResultSet res = pst.executeQuery();
+            while (res.next()) {
+                Empresa item = new Empresa();
+                item.setIdusuario(res.getInt("idusuario"));
+                item.setIdempresa(res.getInt("idempresa"));
+                item.setLogin(res.getString("username"));
+                item.setSenha(res.getString("senha"));
+                item.setEmail(res.getString("email"));
+                item.setPerfil(res.getString("perfil"));
+                item.setCNPJ(res.getString("cnpj"));
+                item.setTipo(res.getString("tipo"));
+                item.setEndereco(res.getString("endereco"));
+
+                retorno.add(item);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(EmpresaDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return retorno;
+
+    }
 }
