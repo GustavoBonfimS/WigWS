@@ -16,6 +16,7 @@ public class Avaliacao {
     private int idavaliacao;
     private String autor;
     private String conteudo;
+    private String empresa;
     private Date data;
     private Time hora;
     private int idcliente;
@@ -76,6 +77,13 @@ public class Avaliacao {
     public void setHora(Time hora) {
         this.hora = hora;
     }
-    
+
+    public String getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(String empresa) {
+        this.empresa = empresa;
+    }
     
 }

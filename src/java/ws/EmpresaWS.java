@@ -78,7 +78,33 @@ public class EmpresaWS {
         Gson g = new Gson();
         return g.toJson(e);
     }
-   
+    
+    @GET
+    @Produces("application/json")
+    @Path("/get/id/{idempresa}")
+    public String getEmpresaPeloID(@PathParam("idempresa") int idempresa) {
+        Empresa e = new Empresa();
+
+        EmpresaDAO dao = new EmpresaDAO();
+        e = dao.buscarPeloIdAll(idempresa);
+
+        Gson g = new Gson();
+        return g.toJson(e);
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/get/nome/{nome}")
+    public String getEmpresaPeloNome(@PathParam("nome") String nome) {
+        Empresa e = new Empresa();
+
+        EmpresaDAO dao = new EmpresaDAO();
+        e = dao.buscarPeloNome(nome);
+
+        Gson g = new Gson();
+        return g.toJson(e);
+    }
+    
     @POST
     @Consumes({"application/json"})
     @Path("/Inserir")

@@ -16,6 +16,7 @@ import modelo.Cliente;
 import modelo.Usuario;
 
 public class ClienteDAO {
+    EmpresaDAO eDAO = new EmpresaDAO();
 
     public ClienteDAO() {
 
@@ -177,7 +178,7 @@ public class ClienteDAO {
     }
     
     public List<Avaliacao> atualizarIndex(Date lastCheck, Date dataAtual) {
-        String sql = "select * from avaliacao where data between ? and ? ";
+        String sql = "select * from avaliacao where data between ? and ? ORDER BY hora desc";
         List<Avaliacao> retorno = new ArrayList<Avaliacao>();
 
         PreparedStatement pst = Conexao.getPreparedStatement(sql);
@@ -194,6 +195,7 @@ public class ClienteDAO {
                 item.setIdempresa(res.getInt("idempresa"));
                 item.setData(res.getDate("data"));
                 item.setHora(res.getTime("hora"));
+                item.setEmpresa(eDAO.buscarPeloId(item.getIdempresa()));
 
                 retorno.add(item);
             }
@@ -260,7 +262,7 @@ public class ClienteDAO {
     }
 
     public List<Avaliacao> listarAvaliacao() {
-        String sql = "SELECT * FROM avaliacao";
+        String sql = "SELECT * FROM avaliacao ORDER BY data desc, hora desc";
         List<Avaliacao> retorno = new ArrayList<Avaliacao>();
 
         PreparedStatement pst = Conexao.getPreparedStatement(sql);
@@ -288,6 +290,68 @@ public class ClienteDAO {
         return retorno;
 
     }
+    
+    public List<Avaliacao> listarAvaliacaoDaEmpresa(int empresa) {
+        String sql = "SELECT * FROM avaliacao WHERE idempresa = ?"
+                + " ORDER BY data desc, hora desc";
+        List<Avaliacao> retorno = new ArrayList<Avaliacao>();
+
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+
+            pst.setInt(1, empresa);
+            ResultSet res = pst.executeQuery();
+            while (res.next()) {
+                Avaliacao item = new Avaliacao();
+                item.setIdavaliacao(res.getInt("idavaliacao"));
+                item.setConteudo(res.getString("conteudo"));
+                item.setAutor(res.getString("autor"));
+                item.setIdcliente(res.getInt("idcliente"));
+                item.setIdempresa(res.getInt("idempresa"));
+                item.setData(res.getDate("data"));
+                item.setHora(res.getTime("hora"));
+
+                retorno.add(item);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return retorno;
+
+    }
+    
+    public Avaliacao buscarResposta(int idavaliacao) {
+        String sql = "SELECT * from resposta where idavaliacao = ?";
+        
+        Avaliacao item = null;
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+
+            pst.setInt(1, idavaliacao);
+            ResultSet res = pst.executeQuery();
+            if (res.next()) {
+                item = new Avaliacao();
+                item.setIdavaliacao(res.getInt("idavaliacao"));
+                item.setConteudo(res.getString("conteudo"));
+                item.setAutor(res.getString("autor"));
+                item.setIdcliente(res.getInt("idcliente"));
+                item.setIdempresa(res.getInt("idempresa"));
+                item.setData(res.getDate("data"));
+                item.setHora(res.getTime("hora"));
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return item;
+
+    }
 
     public Avaliacao buscarIdAvaliacao(Avaliacao avaliacao) {
         String sql = "SELECT * FROM avaliacao where conteudo =?";
@@ -311,6 +375,103 @@ public class ClienteDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return retorno;
+
+    }
+    
+    public boolean inserirLoginIndex(String login, Date lastCheck) {
+        String sql = "INSERT INTO home(login, lastCheck) VALUES(?,?)";
+        Boolean retorno = false;
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+            pst.setString(1, login);
+            pst.setDate(2, lastCheck);
+
+            if (pst.executeUpdate() > 0) {
+                retorno = true;
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
+            retorno = false;
+        }
+
+        return retorno;
+
+    }
+    
+    public Date buscarLastCheck(String login) {
+        String sql = "select lastCheck from home where login=?";
+        Date retorno = null;
+
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+
+            pst.setString(1, login);
+            ResultSet res = pst.executeQuery();
+
+            if (res.next()) {
+                retorno = res.getDate("lastCheck");
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return retorno;
+
+    }
+    
+    public boolean atualizarLastCheck(String login, Date dataAtual) {
+        String sql = "UPDATE home set lastCheck =? where login=?";
+        Boolean retorno = false;
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+
+            pst.setDate(1, dataAtual);
+            pst.setString(2, login);
+            if (pst.executeUpdate() > 0) {
+                retorno = true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+            retorno = false;
+        }
+
+        return retorno;
+
+    }
+    
+    public List<Avaliacao> listarMinhasAvaliacao(int idcliente) {
+        String sql = "SELECT * FROM avaliacao WHERE idcliente = ? "
+                + "ORDER BY data desc, hora desc";
+        List<Avaliacao> retorno = new ArrayList<Avaliacao>();
+
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+
+            pst.setInt(1, idcliente);
+            ResultSet res = pst.executeQuery();
+            while (res.next()) {
+                Avaliacao item = new Avaliacao();
+                item.setIdavaliacao(res.getInt("idavaliacao"));
+                item.setConteudo(res.getString("conteudo"));
+                item.setAutor(res.getString("autor"));
+                item.setIdcliente(res.getInt("idcliente"));
+                item.setIdempresa(res.getInt("idempresa"));
+                item.setData(res.getDate("data"));
+                item.setHora(res.getTime("hora"));
+                item.setEmpresa(eDAO.buscarPeloId(item.getIdempresa()));
+
+                retorno.add(item);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
 
         }
 

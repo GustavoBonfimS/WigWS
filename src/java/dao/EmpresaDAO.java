@@ -189,4 +189,110 @@ public class EmpresaDAO {
         return retorno;
 
     }
+    
+    public String buscarPeloId(int empresa) {
+        String sql = "SELECT usuario.idusuario, usuario.username, usuario.senha, usuario.email, usuario.perfil,\n"
+                + "empresa.idempresa, empresa.cnpj, empresa.tipo, empresa.endereco FROM usuario, empresa\n"
+                + "WHERE empresa.idempresa =? and usuario.idusuario = empresa.idusuario";
+        Empresa retorno = null;
+
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+
+            pst.setInt(1, empresa);
+            ResultSet res = pst.executeQuery();
+
+            if (res.next()) {
+                retorno = new Empresa();
+                retorno.setIdusuario(res.getInt("idusuario"));
+                retorno.setIdempresa(res.getInt("idempresa"));
+                retorno.setCNPJ(res.getString("CNPJ"));
+                retorno.setTipo(res.getString("tipo"));
+                retorno.setEndereco(res.getString("endereco"));
+                retorno.setEmail(res.getString("email"));
+                retorno.setLogin(res.getString("username"));
+                retorno.setSenha(res.getString("senha"));
+                retorno.setPerfil(res.getString("perfil"));
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(EmpresaDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return retorno.getLogin();
+
+    }
+    
+    // busca pelo id mas do jeito certo, tras o objeto inteiro, gambiarra
+    public Empresa buscarPeloIdAll(int empresa) {
+        String sql = "SELECT usuario.idusuario, usuario.username, usuario.senha, usuario.email, usuario.perfil,\n"
+                + "empresa.idempresa, empresa.cnpj, empresa.tipo, empresa.endereco FROM usuario, empresa\n"
+                + "WHERE empresa.idempresa =? and usuario.idusuario = empresa.idusuario";
+        Empresa retorno = null;
+
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+
+            pst.setInt(1, empresa);
+            ResultSet res = pst.executeQuery();
+
+            if (res.next()) {
+                retorno = new Empresa();
+                retorno.setIdusuario(res.getInt("idusuario"));
+                retorno.setIdempresa(res.getInt("idempresa"));
+                retorno.setCNPJ(res.getString("CNPJ"));
+                retorno.setTipo(res.getString("tipo"));
+                retorno.setEndereco(res.getString("endereco"));
+                retorno.setEmail(res.getString("email"));
+                retorno.setLogin(res.getString("username"));
+                retorno.setSenha(res.getString("senha"));
+                retorno.setPerfil(res.getString("perfil"));
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(EmpresaDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return retorno;
+
+    }
+    
+    public Empresa buscarPeloNome(String empresa) {
+        String sql = "SELECT usuario.idusuario, usuario.username, usuario.senha, usuario.email, usuario.perfil,\n"
+                + "empresa.idempresa, empresa.cnpj, empresa.tipo, empresa.endereco FROM usuario, empresa\n"
+                + "WHERE usuario.username =? and usuario.idusuario = empresa.idusuario";
+        Empresa retorno = null;
+
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+
+            pst.setString(1, empresa);
+            ResultSet res = pst.executeQuery();
+
+            if (res.next()) {
+                retorno = new Empresa();
+                retorno.setIdusuario(res.getInt("idusuario"));
+                retorno.setIdempresa(res.getInt("idempresa"));
+                retorno.setCNPJ(res.getString("CNPJ"));
+                retorno.setTipo(res.getString("tipo"));
+                retorno.setEndereco(res.getString("endereco"));
+                retorno.setEmail(res.getString("email"));
+                retorno.setLogin(res.getString("username"));
+                retorno.setSenha(res.getString("senha"));
+                retorno.setPerfil(res.getString("perfil"));
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(EmpresaDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return retorno;
+
+    }
 }

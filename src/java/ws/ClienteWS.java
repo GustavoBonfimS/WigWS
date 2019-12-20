@@ -6,6 +6,7 @@
 package ws;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dao.ClienteDAO;
 import dao.UsuarioDAO;
 import java.sql.Date;
@@ -57,7 +58,7 @@ public class ClienteWS {
         // ClienteDAO tem o metodo inserir especifico para o cliente
         // UsuarioDAO tem o metodo de buscar para pegar o id
         ClienteDAO dao = new ClienteDAO();
-    
+
         if (dao.inserir(u) == true) {
             // busca id da tabela usuario
             Cliente usuario = dao.buscarIdDoCliente(u);
@@ -90,23 +91,23 @@ public class ClienteWS {
     @Consumes({"application/json"})
     @Path("/Avaliacao/Inserir")
     public String FazerAvaliacao(String content) {
-        Gson g = new Gson();
-        Avaliacao a = g.fromJson(content, Avaliacao.class);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        Avaliacao a = gson.fromJson(content, Avaliacao.class);
 
         ClienteDAO dao = new ClienteDAO();
         Avaliacao retorno = null;
         if (dao.fazerAvaliacao(a) == true) {
             retorno = dao.buscarIdAvaliacao(a);
         }
-        return g.toJson(retorno);
+        return gson.toJson(retorno);
     }
 
     @POST
     @Consumes({"application/json"})
     @Path("/Avaliacao/Responder")
     public boolean ResponderAvaliacao(String content) {
-        Gson g = new Gson();
-        Avaliacao a = g.fromJson(content, Avaliacao.class);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        Avaliacao a = gson.fromJson(content, Avaliacao.class);
 
         ClienteDAO dao = new ClienteDAO();
         return dao.ResponderAvaliacao(a);
@@ -120,22 +121,58 @@ public class ClienteWS {
         ClienteDAO dao = new ClienteDAO();
         lista = dao.listarAvaliacao();
 
-        Gson g = new Gson();
-        return g.toJson(lista);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        return gson.toJson(lista);
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/Avaliacao/Listar/{idempresa}")
+    public String ListarAvaliacaoDaEmpresa(@PathParam("idempresa") int idempresa) {
+        List<Avaliacao> lista;
+        ClienteDAO dao = new ClienteDAO();
+        lista = dao.listarAvaliacaoDaEmpresa(idempresa);
+
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        return gson.toJson(lista);
     }
 
     @GET
     @Produces("application/json")
     @Path("/Avaliacao/get/{conteudo}")
-    public String getAvaliacao(@PathParam("conteudo") String content) {
+    public String getAvaliacao(@PathParam("conteudo") String conteudo) {
         Avaliacao a = new Avaliacao();
-        a.setConteudo("gostei muito do local, ótimas garotas");
+        a.setConteudo(conteudo);
 
         ClienteDAO dao = new ClienteDAO();
         a = dao.buscarIdAvaliacao(a);
 
-        Gson g = new Gson();
-        return g.toJson(a);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        return gson.toJson(a);
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/Avaliacao/Resposta/get/{idavaliacao}")
+    public String getResposta(@PathParam("idavaliacao") int idavaliacao) {
+        Avaliacao a = new Avaliacao();
+        
+        ClienteDAO dao = new ClienteDAO();
+        a = dao. buscarResposta(idavaliacao);
+
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        return gson.toJson(a);
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/Avaliacao/minhas/{idcliente}")
+    public String minhasAvaliacoes(@PathParam("idcliente") int idcliente) {
+        ClienteDAO dao = new ClienteDAO();
+        List<Avaliacao> lista = dao.listarMinhasAvaliacao(idcliente);
+
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        return gson.toJson(lista);
     }
 
     @PUT
@@ -170,24 +207,29 @@ public class ClienteWS {
         Gson g = new Gson();
         return g.toJson(c);
     }
-    
+
     @GET
     @Produces("application/json")
-    @Path("/atualizarIndex/{lastCheck}")
-    public String atualizarIndex (@PathParam("lastCheck") Date lastCheck) {
-        Date horaAtual;
+    @Path("/atualizarIndex/{login}")
+    public String atualizarIndex(@PathParam("login") String login) {
+        Date dataAtual;
         java.util.Date dataUtil = new java.util.Date();
-        horaAtual = new Date(dataUtil.getTime());
-        
+        dataAtual = new Date(dataUtil.getTime());
         ClienteDAO dao = new ClienteDAO();
-        List<Avaliacao> lista;
-        lista = dao.atualizarIndex(lastCheck, horaAtual);
-        
-        Gson g = new Gson();
-        return g.toJson(lista);
+
+        Date lastCheck = dao.buscarLastCheck(login);
+        if (lastCheck == null) {
+            dao.inserirLoginIndex(login, dataAtual);
+            lastCheck = dao.buscarLastCheck(login);
+        }
+
+        List<Avaliacao> lista = dao.atualizarIndex(lastCheck, dataAtual);
+        dao.atualizarLastCheck(login, dataAtual);
+
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
+        return gson.toJson(lista);
     }
-    
-    
 
     /**
      * PUT method for updating or creating an instance of ClienteWS
