@@ -49,7 +49,7 @@
 function TestSupport() {
     this.wadlDoc = null;
     this.wadlURL = '';
-    this.wadlErr = 'Não é possível acessar WADL: reinicie a aplicação RESTful e atualize esta página.';
+    this.wadlErr = 'Não é possível acessar o WADL. Reinicie a aplicação RESTful e atualize esta página ou forneça o URL aqui. Isso pode ser causado pela implementação REST sem fornecer o arquivo WADL automaticamente (como JBoss RESTEasy). Nesse caso, gere-o previamente de maneira manual ou alterne para bibliotecas Jersey.';
     this.currentValidUrl = '';
     this.breadCrumbs = [];
     this.currentMethod = '';
@@ -124,7 +124,7 @@ TestSupport.prototype = {
             this.wdr.updateMenu(this.wadlURL, ts.wadlDoc);
         } else {
             this.setvisibility('main', 'inherit');
-            this.updatepage('content', '<span class=bld>Página da Ajuda</span><br/><br/><p>Não é possível acessar WADL: reinicie a aplicação REST e atualize esta página.</p><p>Se ainda estiver vendo este erro e se estiver acessando esta página através do plug-in Firefox com Firebug, então<br/>você precisará desativar o firebug para arquivos locais. Esta é a barra de menus do Firefox, selecione <br/>Ferramentas > Firebug > Desativar Firebug para Arquivos Locais</p>');
+            this.updatepage('content', '<span class=bld>Página de Ajuda</span><br/><br/><p>Não é possível acessar o WADL. Reinicie a aplicação REST e atualize esta página. Isso pode ser causado pela implementação REST sem fornecer o arquivo WADL automaticamente (como JBoss RESTEasy). Nesse caso, gere-o previamente de maneira manual ou alterne para bibliotecas Jersey.</p><p>Se você ainda vir esse erro e estiver acessando essa página usando o Firefox com o plug-in Firebug, <br/>será necessário desativar o firebug para arquivos locais. Ou seja, na barra de menus do Firefox, marque <br/>Ferramentas > Firebug > Desativar Firebug para Arquivos Locais</p>');
         }            
     },
 
@@ -275,7 +275,10 @@ TestSupport.prototype = {
 
     doShowContentForId : function (ndx) {
         this.clearInput();
-        document.getElementById("req_headers").style.visibility="visible";
+        var elem = document.getElementById("req_headers");
+        if (elem) {
+            elem.style.visibility="visible";
+        }
         var cat = ts.allcat[ndx];
         var r = cat.r;
         var uri = cat.uri;
@@ -1999,7 +2002,7 @@ XHR.prototype = {
             }
         }
         
-        if (toggleHeadersBlock.cache) {
+        if (toggleHeadersBlock && toggleHeadersBlock.cache) {
             var req_hdr = ts.getRequestHeader('req_hdr_1');
             if (req_hdr.length > 0) {
                 xmlHttpReq.setRequestHeader(req_hdr, ts.getRequestHeader('req_hdr_val_1'));
