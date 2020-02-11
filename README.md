@@ -1,6 +1,6 @@
 # WigWS
 
-O projeto deve ser executado na IDE NetBeans.
+O projeto foi criado e executado na IDE NetBeans.
 
 URL DA API:
 http://localhost:8080/WigWS/webresources/
