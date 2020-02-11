@@ -1,9 +1,9 @@
 # WigWS
 
 O projeto foi criado e executado na IDE NetBeans.
-. É necessario inserir os .JAR das seguintes bibliotecas:
-. GSON 2.3.1
-. MSSQL JDBC 7.2.2 JR8
+* É necessario inserir os .JAR das seguintes bibliotecas:
+* GSON 2.3.1
+* MSSQL JDBC 7.2.2 JR8
 
 URL DA API:
 http://localhost:8080/WigWS/webresources/
