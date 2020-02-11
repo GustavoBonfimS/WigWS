@@ -1,6 +1,9 @@
 # WigWS
 
 O projeto foi criado e executado na IDE NetBeans.
+. É necessario inserir os .JAR das seguintes bibliotecas:
+. GSON 2.3.1
+. MSSQL JDBC 7.2.2 JR8
 
 URL DA API:
 http://localhost:8080/WigWS/webresources/
@@ -18,12 +21,26 @@ usuario/Alterar - alterar usuario
 ---- cliente
 cliente/Cadastrar - cadastro de cliente
 cliente/Listar - listar clientes cadastrados
+cliente/get/{login} - busca um cliente especifico pelo login
+cliente/Alterar - alterar cadastro do cliente - POST
+cliente/atualizarIndex/{login} - atualiza a pagina principal do app
 - alteração e exclusão de clientes serão feitos pelo caminho de usuario
 
 ---- avaliação
 cliente/Avaliacao/Listar - listar avaliações
 cliente/Avaliacao/Inserir - fazer avaliação
-cliente/Avaliacao/Responder - responder avaliação - sera utilizado pelo cliente e pela emprssa // por motivo de preguiça do desenvolvedor
+cliente/Avaliacao/get/{conteudo} - busca uma avalilação pelo seu conteudo
+cliente/Avaliacao/minhas/{idcliente} - busca as avaliações de um cliente pelo seu id
+cliente/Avaliacao/Listar/{idempresa} - busca as avaliações de um determinada empresa pelo seu idempresa
+cliente/Avaliacao/Responder - responder avaliação - sera utilizado pelo cliente e pela emprssa
+
+---- empresa
+empresa/Inserir - inserir uma empresa
+empresa/Listar - listar todas as empresas
+empresa//get/{idempresa} - buscar uma empresa pelo seu idempresa
+empresa/pesquisa/{empresa} - buscar uma empresa pelo seu nome - usada para fazer a barra de pesquisa do app
+empresa/get/{CNPJ} - busca empresa pelo CNPJ
+empresa/get/nome/{nome} - busca empresa pelo seu nome
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
