@@ -19,7 +19,7 @@ usuario/Inserir - inserir usuario
 usuario/Alterar - alterar usuario  
   
   
----- **client**  
+---- **cliente**  
 cliente/Cadastrar - cadastro de cliente  
 cliente/Listar - listar clientes cadastrados  
 cliente/get/{login} - busca um cliente especifico pelo login  
