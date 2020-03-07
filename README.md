@@ -6,10 +6,12 @@ O projeto foi criado e executado na IDE NetBeans.
 * MSSQL JDBC 7.2.2 JR8
 
 URL DA API:
-http://localhost:8080/WigWS/webresources/
+http://localhost:8080/api/
 * o termo localhost deve ser trocado pelo ip da maquina de execução caso deseja-se consumir a api em maquinas virtuais, emuladores ou outros dispositivos
 
 # URL DOS METODOS:  
+**colocar após a url base**  
+  
 ---- **usuario**  
 usuario/get/{login} - buscar usuario  
 usuario/login/{login}/{senha} - validar login  
