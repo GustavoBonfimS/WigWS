@@ -18,7 +18,7 @@ import java.sql.SQLException;
  */
 public class Conexao {
     private static final String banco = 
-            "jdbc:sqlserver://localhost:1433;databaseName=wig_teste";
+            "jdbc:sqlserver://localhost:1433;databaseName=WIG";
     /**
      * O atributo driver representa a classe do Driver JDBC que será usada na 
      * conexão. Quando se utiliza outros bancos usa-se a classe apropriada a 
