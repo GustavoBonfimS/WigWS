@@ -21,6 +21,7 @@ public class Avaliacao {
     private Time hora;
     private int idcliente;
     private int idempresa;
+    private String nomeEmpresa;
 
     public int getIdavaliacao() {
         return idavaliacao;
@@ -85,5 +86,15 @@ public class Avaliacao {
     public void setEmpresa(String empresa) {
         this.empresa = empresa;
     }
+
+    public String getNomeEmpresa() {
+        return nomeEmpresa;
+    }
+
+    public void setNomeEmpresa(String nomeEmpresa) {
+        this.nomeEmpresa = nomeEmpresa;
+    }
+    
+    
     
 }

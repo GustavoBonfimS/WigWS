@@ -193,7 +193,10 @@ public class UsuarioDAO {
             {
                 retorno = new Usuario();
                 retorno.setLogin(res.getString("username"));
-                retorno.setSenha(res.getString("senha"));       
+                retorno.setSenha(res.getString("senha"));
+                retorno.setIdusuario(res.getInt("idusuario"));
+                retorno.setPerfil(res.getString("perfil"));
+                retorno.setEmail(res.getString("email"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);

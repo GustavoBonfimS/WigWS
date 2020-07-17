@@ -29,6 +29,7 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
+        resources.add(dao.NewCrossOriginResourceSharingFilter.class);
         resources.add(ws.ClienteWS.class);
         resources.add(ws.CrossOriginResourceSharingFilter.class);
         resources.add(ws.EmpresaWS.class);

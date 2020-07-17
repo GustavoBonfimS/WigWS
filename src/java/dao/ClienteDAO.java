@@ -278,6 +278,7 @@ public class ClienteDAO {
                 item.setIdempresa(res.getInt("idempresa"));
                 item.setData(res.getDate("data"));
                 item.setHora(res.getTime("hora"));
+                item.setNomeEmpresa(new EmpresaDAO().buscarPeloId(item.getIdempresa()));
 
                 retorno.add(item);
             }

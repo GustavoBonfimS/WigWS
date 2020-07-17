@@ -1,6 +1,8 @@
 package ws;
 
 import com.google.gson.Gson;
+import dao.ClienteDAO;
+import dao.EmpresaDAO;
 import dao.UsuarioDAO;
 import java.util.List;
 import javax.ws.rs.core.Context;
@@ -13,6 +15,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
+import modelo.Cliente;
+import modelo.Empresa;
 import modelo.Usuario;
 
 /**
@@ -63,31 +67,34 @@ public class WigWS {
     }
 
     // metodo para validar login buscando login e senha
-    @GET
-    @Produces("application/json")
-    @Path("/login/{login}/{senha}")
-    public String ValidarLogin(@PathParam("login") String login,
-            @PathParam("senha") String senha) {
-
-        Usuario u = new Usuario();
-        u.setLogin(login);
-        u.setSenha(senha);
+    @POST
+    @Consumes("application/json")
+    @Path("/Login")
+    public String ValidarLogin(String content) {
+        Gson g = new Gson();
+        Usuario u = (Usuario) g.fromJson(content, Usuario.class);
+        String retorno = null;
 
         // chama classe que possui os metodos para buscar no BD
         UsuarioDAO dao = new UsuarioDAO();
         Usuario usuario = dao.validarLogin(u);
-
-        String retorno;
-
+        
         if (usuario == null) {
-            retorno = "false";
-        } else {
-            retorno = "true";
+            return null;
         }
+        
+        if (usuario.getPerfil().equals("cliente")) {
+            Cliente cliente = new Cliente();
+            cliente.setLogin(u.getLogin());
+            retorno = g.toJson(new ClienteDAO().buscar(cliente));
+        } else if (usuario.getPerfil().equals("empresa")) {
+            Empresa empresa = new Empresa();
+            empresa.setLogin(u.getLogin());
+            retorno = g.toJson(new EmpresaDAO().buscarPeloNome(u.getLogin()));
+        } else retorno = g.toJson(usuario);
 
-        // converter para json
-        Gson g = new Gson();
-        return g.toJson(retorno);
+        // converter para json 
+        return retorno;
     }
 
     @POST
