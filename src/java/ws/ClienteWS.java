@@ -48,10 +48,12 @@ public class ClienteWS {
      * @param content
      * @return an instance of java.lang.String
      */
+    
+    /*
     @POST
     @Consumes({"application/json"})
     @Path("/Cadastrar")
-    public Cliente EfeturarCadastro(Cliente u) {
+    public String EfeturarCadastro(Cliente u) {
         Gson g = new Gson();
         // Cliente u = new Cliente(); // = g.fromJson(content, Cliente.class);
 
@@ -68,12 +70,13 @@ public class ClienteWS {
             dao.onCliente(usuario);
             //busca id da tabela cliente 
             usuario = dao.buscar(u);
-            return usuario;
+            return g.toJson(usuario);
 
         } else {
             return null;
         }
     }
+    */
 
     @GET
     @Produces("application/json")
@@ -120,6 +123,18 @@ public class ClienteWS {
         List<Avaliacao> lista;
         ClienteDAO dao = new ClienteDAO();
         lista = dao.listarAvaliacao();
+
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        return gson.toJson(lista);
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/Avaliacao/Resposta/Listar/Cliente/{idcliente}")
+    public String ListarRespostasDoCliente(@PathParam("idcliente") int idcliente) {
+        List<Avaliacao> lista;
+        ClienteDAO dao = new ClienteDAO();
+        lista = dao.listRespostasDoCliente(idcliente);
 
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         return gson.toJson(lista);
@@ -192,6 +207,24 @@ public class ClienteWS {
         } else {
             return false;
         }
+    }
+    
+    @PUT
+    @Consumes("application/json")
+    @Path("/forget")
+    public String AlterarSenha(String content) {
+        Gson g = new Gson();
+        ClienteDAO dao = new ClienteDAO();
+        Cliente json = g.fromJson(content, Cliente.class);
+        Cliente e = dao.buscarPorEmail(json);
+        
+        if (e != null) {
+            if (dao.atualizarSenha(json)) {
+                json = dao.buscarPorEmail(json);
+                return g.toJson(json);
+            }
+        }
+        return null;
     }
 
     @GET

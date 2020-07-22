@@ -166,6 +166,7 @@ public class EmpresaDAO {
         try {
             // pst.setString(1, pesquisa);
             ResultSet res = pst.executeQuery();
+            if(res == null) return null;
             while (res.next()) {
                 Empresa item = new Empresa();
                 item.setIdusuario(res.getInt("idusuario"));

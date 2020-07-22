@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelo.Avaliacao;
 import modelo.Cliente;
-import modelo.Usuario;
 
 public class ClienteDAO {
     EmpresaDAO eDAO = new EmpresaDAO();
@@ -114,6 +113,26 @@ public class ClienteDAO {
         return retorno;
 
     }
+    
+    public boolean atualizarSenha(Cliente usuario) {
+        String sql = "UPDATE usuario set senha=? where email=?";
+        Boolean retorno = false;
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+
+            pst.setString(1, usuario.getSenha());
+            pst.setString(2, usuario.getEmail());
+            if (pst.executeUpdate() > 0) {
+                retorno = true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+            retorno = false;
+        }
+
+        return retorno;
+
+    }
 
     public Cliente buscar(Cliente cliente) {
         String sql = "select usuario.idusuario, cliente.idcliente, usuario.username, usuario.senha, usuario.email, usuario.perfil,\n"
@@ -124,6 +143,38 @@ public class ClienteDAO {
         try {
 
             pst.setString(1, cliente.getLogin());
+            ResultSet res = pst.executeQuery();
+
+            if (res.next()) {
+                retorno = new Cliente();
+                retorno.setIdusuario(res.getInt("idusuario"));
+                retorno.setIdcliente(res.getInt("idcliente"));
+                retorno.setLogin(res.getString("username"));
+                retorno.setSenha(res.getString("senha"));
+                retorno.setPerfil(res.getString("perfil"));
+                retorno.setEmail(res.getString("email"));
+                retorno.setCPF(res.getString("CPF"));
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return retorno;
+
+    }
+    
+    public Cliente buscarPorEmail(Cliente cliente) {
+        String sql = "select usuario.idusuario, cliente.idcliente, usuario.username, usuario.senha, usuario.email, usuario.perfil,\n"
+                + "cliente.CPF from usuario, cliente where usuario.email =? and usuario.idusuario = cliente.idusuario";
+        Cliente retorno = null;
+
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+
+            pst.setString(1, cliente.getEmail());
             ResultSet res = pst.executeQuery();
 
             if (res.next()) {
@@ -195,7 +246,7 @@ public class ClienteDAO {
                 item.setIdempresa(res.getInt("idempresa"));
                 item.setData(res.getDate("data"));
                 item.setHora(res.getTime("hora"));
-                item.setEmpresa(eDAO.buscarPeloId(item.getIdempresa()));
+                item.setNomeEmpresa(eDAO.buscarPeloId(item.getIdempresa()));
 
                 retorno.add(item);
             }
@@ -213,6 +264,10 @@ public class ClienteDAO {
 
         String sql = "INSERT INTO avaliacao(autor, conteudo, idcliente, idempresa, data, hora) VALUES(?,?,?,?,?,?)";
         boolean retorno = false;
+        Date dataAtual;
+        java.util.Date dataUtil = new java.util.Date();
+        dataAtual = new Date(dataUtil.getTime());
+        Time hora = new Time(dataUtil.getTime());
         DateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
         PreparedStatement pst = Conexao.getPreparedStatement(sql);
         try {
@@ -220,8 +275,8 @@ public class ClienteDAO {
             pst.setString(2, avaliacao.getConteudo());
             pst.setInt(3, avaliacao.getIdcliente());
             pst.setInt(4, avaliacao.getIdempresa());
-            pst.setDate(5, avaliacao.getData());
-            pst.setTime(6, avaliacao.getHora());
+            pst.setDate(5, dataAtual);
+            pst.setTime(6, hora);
 
             if (pst.executeUpdate() > 0) {
                 retorno = true;
@@ -311,8 +366,44 @@ public class ClienteDAO {
                 item.setIdempresa(res.getInt("idempresa"));
                 item.setData(res.getDate("data"));
                 item.setHora(res.getTime("hora"));
+                item.setNomeEmpresa(new EmpresaDAO().buscarPeloId(item.getIdempresa()));
 
                 retorno.add(item);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return retorno;
+
+    }
+    
+    public List<Avaliacao> listRespostasDoCliente(int idcliente) {
+        String sql = "SELECT * FROM RESPOSTA WHERE idcliente = ?"
+                + " ORDER BY data desc, hora desc";
+        List<Avaliacao> retorno = new ArrayList<Avaliacao>();
+
+        PreparedStatement pst = Conexao.getPreparedStatement(sql);
+        try {
+
+            pst.setInt(1, idcliente);
+            ResultSet res = pst.executeQuery();
+            while (res.next()) {
+                Avaliacao item = new Avaliacao();
+                item.setIdavaliacao(res.getInt("idavaliacao"));
+                item.setConteudo(res.getString("conteudo"));
+                item.setAutor(res.getString("autor"));
+                item.setIdcliente(res.getInt("idcliente"));
+                item.setIdempresa(res.getInt("idempresa"));
+                item.setData(res.getDate("data"));
+                item.setHora(res.getTime("hora"));
+                item.setNomeEmpresa(new EmpresaDAO().buscarPeloId(item.getIdempresa()));
+                
+                item.setIdresposta(res.getInt("idresposta"));
+
+                retorno.add(item);                
             }
 
         } catch (SQLException ex) {
@@ -342,6 +433,7 @@ public class ClienteDAO {
                 item.setIdempresa(res.getInt("idempresa"));
                 item.setData(res.getDate("data"));
                 item.setHora(res.getTime("hora"));
+                item.setNomeEmpresa(new EmpresaDAO().buscarPeloId(item.getIdempresa()));
 
             }
 
@@ -372,6 +464,7 @@ public class ClienteDAO {
                 retorno.setIdempresa(res.getInt("idempresa"));
                 retorno.setData(res.getDate("data"));
                 retorno.setHora(res.getTime("hora"));
+                retorno.setNomeEmpresa(new EmpresaDAO().buscarPeloId(retorno.getIdempresa()));
             }
 
         } catch (SQLException ex) {
@@ -466,7 +559,7 @@ public class ClienteDAO {
                 item.setIdempresa(res.getInt("idempresa"));
                 item.setData(res.getDate("data"));
                 item.setHora(res.getTime("hora"));
-                item.setEmpresa(eDAO.buscarPeloId(item.getIdempresa()));
+                item.setNomeEmpresa(eDAO.buscarPeloId(item.getIdempresa()));
 
                 retorno.add(item);
             }

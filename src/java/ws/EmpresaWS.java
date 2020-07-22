@@ -147,10 +147,13 @@ public class EmpresaWS {
     @Path("/pesquisa/{empresa}")
     public String pesquisa (@PathParam("empresa") String empresa) {
         List<Empresa> lista;
+        Gson g = new Gson();
         EmpresaDAO dao = new EmpresaDAO();
         lista = dao.atualizarPesquisa(empresa);
+        if (lista.isEmpty()) {
+            return g.toJson(null);
+        }
 
-        Gson g = new Gson();
         return g.toJson(lista);
     }
     

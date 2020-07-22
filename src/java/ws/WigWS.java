@@ -100,13 +100,28 @@ public class WigWS {
     @POST
     @Consumes({"application/json"})
     @Path("/Inserir")
-    public boolean Inserir(String content) {
+    public String Inserir(String content) {
         Gson g = new Gson();
-        Usuario u = (Usuario) g.fromJson(content, Usuario.class);
+        Cliente u = g.fromJson(content, Cliente.class);
 
-        UsuarioDAO dao = new UsuarioDAO();
+        // ClienteDAO tem o metodo inserir especifico para o cliente
+        // UsuarioDAO tem o metodo de buscar para pegar o id
+        ClienteDAO dao = new ClienteDAO();
 
-        return dao.inserir(u);
+        if (dao.inserir(u) == true) {
+            // busca id da tabela usuario
+            Cliente usuario = dao.buscarIdDoCliente(u);
+            //seta o cpf
+            usuario.setCPF(u.getCPF());
+            // insert id usuario e cpf na tabela cliente
+            dao.onCliente(usuario);
+            //busca id da tabela cliente 
+            usuario = dao.buscar(u);
+            return g.toJson(usuario);
+
+        } else {
+            return null;
+        }
     }
 
     /**
